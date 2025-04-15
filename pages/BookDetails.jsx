@@ -2,19 +2,23 @@ import { bookService } from "../services/book.service.js"
 import { getBooks } from "../services/util.service.js"
 import { AddReview } from "../cmps/AddReview.jsx"
 
-const { useParams, Link } = ReactRouterDOM
+const { useParams, useNavigate, Link } = ReactRouterDOM
 
 const { useState, useEffect } = React
 
 export function BookDetails({ bookId, onBack }) {
   const [book, setBook] = useState(null)
   const [isAddingReview, setIsAddingReview] = useState(false)
-
+  const navigate = useNavigate()
   const params = useParams()
 
   useEffect(() => {
     loadBook()
   }, [params.bookId])
+
+  function onBack() {
+    navigate(-1)
+  }
 
   function loadBook() {
     bookService
@@ -54,7 +58,9 @@ export function BookDetails({ bookId, onBack }) {
         veritatis commodi tenetur voluptate deserunt nihil quibusdam. Expedita,
         architecto omnis?
       </p>
-      <img src={booksImg} alt="Book Image" className="book-img" />
+      {book.thumbnail && (
+        <img src={book.thumbnail} alt="Book Image" className="book-img" />
+      )}
 
       {book.reviews && book.reviews.length > 0 && (
         <section className="book-review">

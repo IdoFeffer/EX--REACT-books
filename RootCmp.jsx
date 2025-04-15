@@ -11,7 +11,8 @@ import { BookAdd } from "./pages/BookAdd.jsx"
 import { AppHeader } from "./cmps/AppHeader.jsx"
 import { BookEdit } from "./cmps/BookEdit.jsx"
 import { UserMsg } from "./cmps/UserMsg.jsx"
-
+import { Team } from "./cmps/Team.jsx"
+import { Vision } from "./cmps/Vision.jsx"
 
 export function RootCmp() {
   // const [page, setPage] = useState('book')
@@ -21,17 +22,17 @@ export function RootCmp() {
       <section className="app">
         <AppHeader />
         <main>
-            <Routes>
-                <Route path='/home' element={<Home />} />
-                <Route path='/about' element={<About />} />
-
-                <Route path='/book' element={<BookIndex />} />
-                <Route path='/book/:bookId' element={<BookDetails />} />
-                <Route path='/book/edit' element={<BookEdit />} />
-                <Route path='/book/edit/:bookId' element={<BookEdit />} />
-                <Route path='/book/add' element={<BookAdd />} />
-
-            </Routes>
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/about/team" element={<Team />} />
+            <Route path="/about/vision" element={<Vision />} /> 
+            <Route path="/book" element={<BookIndex />} /> 
+            <Route path="/book/:bookId" element={<BookDetails />} />
+            <Route path="/book/edit" element={<BookEdit />} />
+            <Route path="/book/edit/:bookId" element={<BookEdit />} />
+            <Route path="/book/add" element={<BookAdd />} />
+          </Routes>
         </main>
         <UserMsg />
       </section>

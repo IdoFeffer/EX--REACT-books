@@ -34,23 +34,32 @@ export function BookAdd() {
     setDebouncedTerm(searchTerm)
   }
 
-  function onAddGoogleBook(googleBook){
-    console.log('googleBook:', googleBook)
+  function onAddGoogleBook(googleBook) {
+    console.log("googleBook:", googleBook)
     const newBook = {
-        id: googleBook.id,
-        title: googleBook.volumeInfo.title,
-        price: getRandomIntInclusive(20, 300),
-        thumbnail: (googleBook.volumeInfo.imageLinks && googleBook.volumeInfo.imageLinks.thumbnail) || '',
+      id: googleBook.id,
+      title: googleBook.volumeInfo.title,
+      thumbnail:
+        (googleBook.volumeInfo.imageLinks &&
+          googleBook.volumeInfo.imageLinks.thumbnail) ||
+        "",
+      listPrice: {
+        amount: getRandomIntInclusive(20, 300),
+        currencyCode: "EUR",
+        isOnSale: false,
+      },
     }
 
     bookService.addBook(newBook)
-    .then(() => {
-        showSuccessMsg('Book added!')
-    })
-    .catch(err => {
-        console.log('error', err);
-        showErrorMsg(`Can't add book`)
-    })
+      .then(() => showSuccessMsg("Book added!"))
+      .catch((err) => {
+        console.log("error:", err)
+        if (err === "Book already exists") {
+          showErrorMsg("This book already exists in your list!")
+        } else {
+          showErrorMsg("Could not add book")
+        }
+      })
   }
 
   return (
@@ -61,9 +70,9 @@ export function BookAdd() {
         <ul>
           {results.map((book) => (
             <li key={book.id}>
-                <h4>{book.volumeInfo.title}</h4>
-                <button onClick={() => onAddGoogleBook(book)}>➕</button>
-                </li>
+              <h4>{book.volumeInfo.title}</h4>
+              <button onClick={() => onAddGoogleBook(book)}>➕</button>
+            </li>
           ))}
         </ul>
       </ul>

@@ -64,8 +64,8 @@ export function BookIndex({ onAddBook, onClose }) {
       <BookFilter onSetFilterBy={onSetFilterBy} filterBy={filterBy} />
 
       <section style={{ marginTop: "10px" }} className="container">
-        <Link to="/book/edit">Add Car</Link>
-        <Link to="/book/add" className="btn">📚 Add from Google</Link>
+        <Link to="/book/edit"className="add-btn">Add Book</Link>
+        <Link to="/book/add" className="add-btn">📚 Add from Google</Link>
       </section>
       <BookList
         loadingClass={loadingClass}
