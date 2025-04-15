@@ -56,6 +56,7 @@ export function BookIndex({ onAddBook, onClose }) {
     showSuccessMsg(`Book "${savedBook.title}" added successfully!`)
   }
 
+
   const loadingClass = isLoading ? "loading" : ""
 
   return (
@@ -64,6 +65,7 @@ export function BookIndex({ onAddBook, onClose }) {
 
       <section style={{ marginTop: "10px" }} className="container">
         <Link to="/book/edit">Add Car</Link>
+        <Link to="/book/add" className="btn">📚 Add from Google</Link>
       </section>
       <BookList
         loadingClass={loadingClass}

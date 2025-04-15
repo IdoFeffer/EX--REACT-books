@@ -13,6 +13,7 @@ export const bookService = {
   getEmptyBook,
   getDefaultFilter,
   addReview,
+  addBook,
 }
 
 function query(filterBy = {}) {
@@ -38,12 +39,18 @@ function remove(bookId) {
   return storageService.remove(book_KEY, bookId)
 }
 
-function save(book) {
-  if (book.id) {
-    return storageService.put(book_KEY, book)
-  } else {
-    return storageService.post(book_KEY, book)
-  }
+// function save(book) {
+//   if (book.id) {
+//     return storageService.put(book_KEY, book)
+//   } else {
+//     return storageService.post(book_KEY, book)
+//   }
+// }
+
+function save(book){
+  return storageService.get(book_KEY, book.id)
+  .then(() => storageService.put(book_KEY, book))
+  .catch(() => storageService.post(book_KEY, book))
 }
 
 function addReview(bookId, review){
@@ -52,6 +59,20 @@ function addReview(bookId, review){
     book.reviews.push(review)
     return save(book)
   }) 
+}
+
+function addBook(book){
+  if (!book.listPrice){
+    book.listPrice = {
+      amount: getRandomIntInclusive(20,300),
+      currencyCode: 'EUR',
+      isOnSale: false
+    }
+  }
+  if (!book.thumbnail) {
+    book.thumbnail = 'http://ca.org/books-photos/20.jpg'
+  }
+  return save(book)
 }
 
 function getEmptyBook(title = "", amount = "") {
@@ -84,6 +105,36 @@ function _createBooks() {
   }
 }
 
+
+// function _createBooks() { 
+//   const ctgs = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion'] 
+//   const books = [] 
+//   for (let i = 0; i < 20; i++) { 
+//       const book = { 
+//           id: utilService.makeId(), 
+//           title: utilService.makeLorem(2), 
+//           subtitle: utilService.makeLorem(4), 
+//           authors: [ 
+//               utilService.makeLorem(1) 
+//           ], 
+//           publishedDate: utilService.getRandomIntInclusive(1950, 2024), 
+//           description: utilService.makeLorem(20), 
+//           pageCount: utilService.getRandomIntInclusive(20, 600), 
+//           categories: [ctgs[utilService.getRandomIntInclusive(0, ctgs.length - 1)]], 
+//           thumbnail: `http://coding-academy.org/books-photos/${i+1}.jpg`, 
+//           language: "en", 
+//           listPrice: { 
+//               amount: utilService.getRandomIntInclusive(80, 500), 
+//               currencyCode: "EUR", 
+//               isOnSale: Math.random() > 0.7 
+//           } 
+//       } 
+//       books.push(book) 
+//   } 
+//   console.log('books', books) 
+// } 
+
+
 function _setNextPrevBookId(book) {
   return query().then((books) => {
     const bookIdx = books.findIndex((currBook) => currBook.id === book.id)
@@ -96,7 +147,6 @@ function _setNextPrevBookId(book) {
     return book
   })
 }
-
 
 function _createBook(title, amount) {
   return {
