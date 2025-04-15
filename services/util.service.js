@@ -1,6 +1,11 @@
-
-
-
+export function getBooks(book){
+    const booksCover = {
+        "Harry Potter": '/assets/img/HarryPotter.jpg',
+        "The Hobbit": '/assets/img/TheHobbit.jpg',
+        "mitAtomic Habitssu": '/assets/img/21.jpg'
+    }
+    return booksCover[book] || ''
+}
 
 export function makeId(length = 6) {
     var txt = ''
