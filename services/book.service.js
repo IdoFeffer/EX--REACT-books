@@ -24,6 +24,7 @@ function query(filterBy = {}) {
     if (filterBy.minPrice) {
       books = books.filter((book) => book.listPrice.amount >= filterBy.minPrice)
     }
+    console.log(`books:` , books)
     return books
   })
 }

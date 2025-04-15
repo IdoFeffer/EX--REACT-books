@@ -1,19 +1,19 @@
 import { bookService } from "../services/book.service.js"
 import { getBooks } from "../services/util.service.js"
+const {useParams, Link} = ReactRouterDOM 
 
 const { useState, useEffect } = React
 
 export function BookDetails({ bookId, onBack }) {
   const [book, setBook] = useState(null)
+  const params = useParams()
 
   useEffect(() => {
-    console.log("Mounting Details")
-    loadBook()
-  }, [])
+     loadBook()
+  }, [params.bookId])
 
   function loadBook() {
-    bookService
-      .get(bookId)
+    bookService.get(params.bookId)
       .then((book) => setBook(book))
       .catch((err) => console.log("err:", err))
   }
