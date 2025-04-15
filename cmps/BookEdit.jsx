@@ -1,8 +1,12 @@
 const { useState } = React
+const { useNavigate } = ReactRouterDOM
 
+import { bookService } from "../services/book.service.js"
+import { showSuccessMsg } from "../services/event-bus.service.js"
 
 export function BookEdit({ onAddBook }) {
   const [bookToEdit, setBookToEdit] = useState({ title: "", price: "" })
+  const navigate = useNavigate()
 
   function handleChange({ target }) {
     const field = target.name
@@ -23,12 +27,12 @@ export function BookEdit({ onAddBook }) {
         isOnSale: false,
       },
     }
-    bookService.save(bookToSave)
-      .then(() => {
-      onAddBook(savedBook)
+
+    bookService.save(bookToSave).then((savedBook) => {
+      showSuccessMsg(`Book "${savedBook.title}" added ✅`)
+      navigate("/book")
       setIsEditing(false)
     })
-
   }
 
   return (
@@ -45,7 +49,7 @@ export function BookEdit({ onAddBook }) {
         value={bookToEdit.price}
         onChange={handleChange}
       />
-      <button>Sumbit</button>
+      <button>Add book</button>
     </form>
   )
 }

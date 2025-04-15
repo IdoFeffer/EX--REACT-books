@@ -1,19 +1,24 @@
 import { bookService } from "../services/book.service.js"
 import { getBooks } from "../services/util.service.js"
-const {useParams, Link} = ReactRouterDOM 
+import { AddReview } from "../cmps/AddReview.jsx"
+
+const { useParams, Link } = ReactRouterDOM
 
 const { useState, useEffect } = React
 
 export function BookDetails({ bookId, onBack }) {
   const [book, setBook] = useState(null)
+  const [isAddingReview, setIsAddingReview] = useState(false)
+
   const params = useParams()
 
   useEffect(() => {
-     loadBook()
+    loadBook()
   }, [params.bookId])
 
   function loadBook() {
-    bookService.get(params.bookId)
+    bookService
+      .get(params.bookId)
       .then((book) => setBook(book))
       .catch((err) => console.log("err:", err))
   }
@@ -30,10 +35,10 @@ export function BookDetails({ bookId, onBack }) {
   if (diff > 10) publishedLabel = "Vintage"
   else if (diff === 0) publishedLabel = "New"
 
-    let readingLevel
-    if (pageCount > 500) readingLevel = "Serious Reading"
-    else if (pageCount >= 200) readingLevel = "Descent reading"
-    else if (pageCount <= 100) readingLevel = "Light reading"
+  let readingLevel
+  if (pageCount > 500) readingLevel = "Serious Reading"
+  else if (pageCount >= 200) readingLevel = "Descent reading"
+  else if (pageCount <= 100) readingLevel = "Light reading"
 
   return (
     <section className="book-details container">
@@ -50,6 +55,31 @@ export function BookDetails({ bookId, onBack }) {
         architecto omnis?
       </p>
       <img src={booksImg} alt="Book Image" className="book-img" />
+
+      {book.reviews && book.reviews.length > 0 && (
+        <section className="book-review">
+          <h3>Reviews:</h3>
+          <ul>
+            {book.reviews.map((review, idx) => {
+              return (
+                <li key={idx}>
+                  <p>{review.fullname}</p>
+                  <p>Rating: {review.rating}</p>
+                  <p>Read at: {review.readAt}</p>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      )}
+      <Link to={`/book/${book.prevBookId}`}>⬅️ Prev</Link>
+      <Link to={`/book/${book.nextBookId}`}>Next ➡️</Link>
+
+      <button onClick={() => setIsAddingReview((prev) => !prev)}>
+        {isAddingReview ? "Cancel" : "➕ Add Review"}
+      </button>
+
+      {isAddingReview && <AddReview bookId={book.id} />}
       <button onClick={onBack}>Back</button>
     </section>
   )

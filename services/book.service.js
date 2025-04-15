@@ -1,6 +1,5 @@
 import { getRandomIntInclusive, loadFromStorage, makeId, makeLorem, saveToStorage } from "./util.service.js"
 import { storageService } from "./async-storage.service.js"
-import './book-preview.css'
 
 
 const book_KEY = "bookDB"
@@ -13,6 +12,7 @@ export const bookService = {
   save,
   getEmptyBook,
   getDefaultFilter,
+  addReview,
 }
 
 function query(filterBy = {}) {
@@ -24,13 +24,13 @@ function query(filterBy = {}) {
     if (filterBy.minPrice) {
       books = books.filter((book) => book.listPrice.amount >= filterBy.minPrice)
     }
-    console.log(`books:` , books)
+    console.log(books);
     return books
   })
 }
 
 function get(bookId) {
-  return storageService.get(book_KEY, bookId)
+  return storageService.get(book_KEY, bookId).then(_setNextPrevBookId)
 }
 
 function remove(bookId) {
@@ -44,6 +44,14 @@ function save(book) {
   } else {
     return storageService.post(book_KEY, book)
   }
+}
+
+function addReview(bookId, review){
+  return get (bookId).then(book => {
+    if (!book.reviews) book.reviews = [] 
+    book.reviews.push(review)
+    return save(book)
+  }) 
 }
 
 function getEmptyBook(title = "", amount = "") {
@@ -76,11 +84,19 @@ function _createBooks() {
   }
 }
 
-// function _createBook(title, amount = 250) {
-//   const book = getEmptyBook(title, amount)
-//   book.id = makeId()
-//   return book
-// }
+function _setNextPrevBookId(book) {
+  return query().then((books) => {
+    const bookIdx = books.findIndex((currBook) => currBook.id === book.id)
+    const nextBook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
+    const prevBook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
+
+    book.nextBookId = nextBook.id
+    book.prevBookId = prevBook.id
+
+    return book
+  })
+}
+
 
 function _createBook(title, amount) {
   return {
@@ -99,5 +115,7 @@ function _createBook(title, amount) {
       currencyCode: "EUR",
       isOnSale: Math.random() > 0.7
     },
+    reviews: [],
+
   }
 }

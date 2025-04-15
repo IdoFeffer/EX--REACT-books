@@ -9,7 +9,7 @@ import { showErrorMsg } from "../services/event-bus.service.js"
 const { useState, useEffect } = React
 const { Link } = ReactRouterDOM
 
-export function BookIndex() {
+export function BookIndex({ onAddBook, onClose }) {
   const [books, setBooks] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
@@ -30,7 +30,8 @@ export function BookIndex() {
 
   function onRemoveBook(bookId) {
     setIsLoading(true)
-    bookService.remove(bookId)
+    bookService
+      .remove(bookId)
       .then(() => {
         setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId))
         showSuccessMsg(`Book (${bookId}) removed successfully!`)
@@ -52,6 +53,7 @@ export function BookIndex() {
 
   function onAddBook(savedBook) {
     setBooks((prevBooks) => [...prevBooks, savedBook])
+    showSuccessMsg(`Book "${savedBook.title}" added successfully!`)
   }
 
   const loadingClass = isLoading ? "loading" : ""
@@ -68,6 +70,7 @@ export function BookIndex() {
         books={books}
         onRemoveBook={onRemoveBook}
       />
+      {/* <BookEdit onAddBook={onAddBook} onClose={() => setIsEditing(false)} /> */}
     </section>
   )
 }
