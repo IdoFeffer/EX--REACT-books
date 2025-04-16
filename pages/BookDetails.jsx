@@ -17,7 +17,7 @@ export function BookDetails({ bookId, onBack }) {
   }, [params.bookId])
 
   function onBack() {
-    navigate(-1)
+    navigate('/book')
   }
 
   function loadBook() {

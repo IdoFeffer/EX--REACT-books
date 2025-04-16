@@ -15,10 +15,13 @@ export function BookList({
           return (
             <li key={book.id}>
               <BookPreview book={book} />
-              <button onClick={() => onRemoveBook(book.id)}>Remove</button>
+              <section className="books-btns">
+
+              <button onClick={() => onRemoveBook(book.id)}><a class="fa-solid fa-trash"></a></button>
               <button>
-                <Link to={`/book/${book.id}`}>Details</Link>
+                <Link to={`/book/${book.id}`}><a class="fa-solid fa-circle-info"></a></Link>
               </button>
+              </section>
             </li>
           )
         })}

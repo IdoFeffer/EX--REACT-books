@@ -1,0 +1,11 @@
+.add-btn-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.books-btns {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
