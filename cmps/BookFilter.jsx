@@ -4,9 +4,14 @@ export function BookFilter({ filterBy, onSetFilterBy }) {
 
     const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy })
 
-    useEffect(() => {
-        onSetFilterBy(filterByToEdit)
-    }, [filterByToEdit])
+    useEffect(()=> {
+        setFilterByToEdit({...filterBy})
+    },[filterBy])
+
+
+    // useEffect(() => {
+    //     onSetFilterBy(filterByToEdit)
+    // }, [filterByToEdit])
 
     function handleChange({ target }) {
         const field = target.name

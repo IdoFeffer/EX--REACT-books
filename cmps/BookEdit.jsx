@@ -5,8 +5,9 @@ import { bookService } from "../services/book.service.js"
 import { showSuccessMsg } from "../services/event-bus.service.js"
 
 export function BookEdit({ onAddBook }) {
-  const [bookToEdit, setBookToEdit] = useState({ title: "", price: "" })
-  const navigate = useNavigate()
+  const [bookToEdit, setBookToEdit] = useState(() =>
+    book || { title: "", price: "" })
+    const navigate = useNavigate()
 
   function handleChange({ target }) {
     const field = target.name

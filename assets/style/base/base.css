@@ -42,3 +42,11 @@ object {
 .debug * {
     outline: 1px solid gold
 }
+
+.book-review {
+    background-color: antiquewhite;
+    margin-bottom: 20px;
+    
+}
+
+/* /////////////////////////////// */

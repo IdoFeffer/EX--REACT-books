@@ -63,12 +63,12 @@ export function BookDetails({ bookId, onBack }) {
       )}
 
       {book.reviews && book.reviews.length > 0 && (
-        <section className="book-review">
+        <section>
           <h3>Reviews:</h3>
           <ul>
             {book.reviews.map((review, idx) => {
               return (
-                <li key={idx}>
+                <li key={idx} className="book-review">
                   <p>{review.fullname}</p>
                   <p>Rating: {review.rating}</p>
                   <p>Read at: {review.readAt}</p>

@@ -7,7 +7,6 @@ import {
 } from "./util.service.js"
 
 import { getRandomIntInclusive } from "./util.service.js"
-
 // import * as utilService from './util.service.js'
 
 import { storageService } from "./async-storage.service.js"
@@ -21,9 +20,12 @@ export const bookService = {
   getDefaultFilter,
   addReview,
   addBook,
+  getFilterFromSearchParam,
+  getCategories,
 }
 
 const book_KEY = "bookDB"
+_createBooks()
 
 function query(filterBy = {}) {
   return storageService.query(book_KEY).then((books) => {
@@ -103,7 +105,7 @@ function getEmptyBook(title = "", amount = "") {
 }
 
 function getDefaultFilter() {
-  return { txt: "", minSpeed: "" }
+  return { txt: "", minPrice: "" }
 }
 
 function _createBooks() {
@@ -146,6 +148,28 @@ function _createBooks() {
 //   console.log('books', books)
 // }
 
+function _createBook(title, amount) {
+  const ctgs = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion']
+  return {
+    id: makeId(),
+    title,
+    subtitle: makeLorem(4),
+    authors: [makeLorem(1)],
+    publishedDate: getRandomIntInclusive(1950, 2025),
+    description: makeLorem(20),
+    pageCount: getRandomIntInclusive(20, 900),
+    categories: [ctgs[utilService.getRandomIntInclusive(0, ctgs.length - 1)]],
+    thumbnail: "http://ca.org/books-photos/20.jpg",
+    language: "en",
+    listPrice: {
+      amount,
+      currencyCode: "EUR",
+      isOnSale: Math.random() > 0.7,
+    },
+    reviews: [],
+  }
+}
+
 function _setNextPrevBookId(book) {
   return query().then((books) => {
     const bookIdx = books.findIndex((currBook) => currBook.id === book.id)
@@ -161,23 +185,25 @@ function _setNextPrevBookId(book) {
   })
 }
 
-function _createBook(title, amount) {
+function getFilterFromSearchParam(searchParams) {
+  const txt = searchParams.get('txt') || ''
+  const minPrice = searchParams.get('minPrice') || ''
   return {
-    id: makeId(),
-    title,
-    subtitle: makeLorem(4),
-    authors: [makeLorem(1)],
-    publishedDate: getRandomIntInclusive(1950, 2025),
-    description: makeLorem(20),
-    pageCount: getRandomIntInclusive(20, 900),
-    categories: ["Fiction"],
-    thumbnail: "http://ca.org/books-photos/20.jpg",
-    language: "en",
-    listPrice: {
-      amount,
-      currencyCode: "EUR",
-      isOnSale: Math.random() > 0.7,
-    },
-    reviews: [],
+    txt, minPrice
   }
 }
+
+function getCategories() {
+  return query().then((books) => {
+    const counts = books.reduce((acc, book) => {
+      if (!book.categories) return acc
+      book.categories.forEach((category) => {
+        acc[category] = (acc[category] || 0) + 1
+      })
+      return acc
+    }, {})
+    return counts
+  })
+}
+
+

@@ -1,25 +1,36 @@
-import { BookFilter } from "../cmps/BookFilter.jsx"
-import { bookService } from "../services/book.service.js"
 import { BookDetails } from "./BookDetails.jsx"
+
+import { BookFilter } from "../cmps/BookFilter.jsx"
 import { BookList } from "../cmps/BookList.jsx"
 import { BookEdit } from "../cmps/BookEdit.jsx"
+
+import { bookService } from "../services/book.service.js"
 import { showSuccessMsg } from "../services/event-bus.service.js"
 import { showErrorMsg } from "../services/event-bus.service.js"
 
 const { useState, useEffect } = React
-const { Link } = ReactRouterDOM
+const { Link, useSearchParams } = ReactRouterDOM
 
-export function BookIndex({ onAddBook, onClose }) {
+export function BookIndex() {
   const [books, setBooks] = useState(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [filterBy, setFilterBy] = useState(bookService.getFilterFromSearchParam(searchParams))
   const [isLoading, setIsLoading] = useState(false)
-  const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
+
   // const [selectedBookId, setSelectedBookId] = useState(null)
   // const [isEditing, setIsEditing] = useState(false)
   // const [bookToEdit, setBookToEdit] = useState(null)
 
   useEffect(() => {
+    const newFilter = bookService.getFilterFromSearchParam(searchParams)
+    setFilterBy(newFilter)
+  }, [searchParams])
+
+  useEffect(() => {
+    setSearchParams(filterBy)
     loadBooks()
   }, [filterBy])
+
 
   function loadBooks() {
     bookService
@@ -72,45 +83,6 @@ export function BookIndex({ onAddBook, onClose }) {
         books={books}
         onRemoveBook={onRemoveBook}
       />
-      {/* <BookEdit onAddBook={onAddBook} onClose={() => setIsEditing(false)} /> */}
     </section>
   )
 }
-
-// return (
-//   <section className="book-index">
-//     {selectedBookId && (
-//       <BookDetails
-//         onBack={() => onSelectBookId(null)}
-//         bookId={selectedBookId}
-//       />
-//     )}
-
-//     {!selectedBookId &&
-//       (books ? (
-//         <React.Fragment>
-//           <BookFilter onSetFilterBy={onSetFilterBy} filterBy={filterBy} />
-
-//           <button onClick={() => setIsEditing(true)}>➕ Add Book</button>
-//           {isEditing && (
-//             <BookEdit
-//               onAddBook={(savedBook) => {
-//                 onAddBook(savedBook)
-//                 setIsEditing(false)
-//               }}
-//               onClose={() => setIsEditing(false)}
-//             />
-//           )}
-
-//           <BookList
-//             loadingClass={loadingClass}
-//             books={books}
-//             onRemoveBook={onRemoveBook}
-//             onSelectBookId={onSelectBookId}
-//           />
-//         </React.Fragment>
-//       ) : (
-//         <div>Loading...</div>
-//       ))}
-//   </section>
-// )
